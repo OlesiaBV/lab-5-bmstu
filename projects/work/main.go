@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
+	"sync"
 	"time"
-	// "sync"
 )
 
 func work() {
@@ -12,5 +12,15 @@ func work() {
 }
 
 func main() {
-	// необходимо в отдельных горутинах вызвать функцию work() 10 раз и дождаться результатов выполнения вызванных функций
+	var wg sync.WaitGroup
+	const workersCount = 10
+
+	for i := 0; i < workersCount; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			work()
+		}()
+	}
+	wg.Wait()
 }
